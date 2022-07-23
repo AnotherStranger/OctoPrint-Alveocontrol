@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_alveocontrol/templates *
+recursive-include octoprint_alveocontrol/translations *
+recursive-include octoprint_alveocontrol/static *
