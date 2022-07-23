@@ -27,7 +27,7 @@ class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
     def on_event(self, event, payload):
         if event == "PrintStarted":
             alveo = serial.Serial(self._settings.get(["Serial port"]), 9600)
-            ser.write("start;")
+            alveo.write("start;")
 
 
     ##~~ Softwareupdate hook
