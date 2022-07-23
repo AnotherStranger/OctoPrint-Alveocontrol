@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
+import serial
 
 ### (Don't forget to remove me)
 # This is a basic skeleton for your plugin's __init__.py. You probably want to adjust the class name of your plugin
@@ -12,27 +13,22 @@ from __future__ import absolute_import
 import octoprint.plugin
 
 class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
-    octoprint.plugin.AssetPlugin,
-    octoprint.plugin.TemplatePlugin
+    octoprint.plugin.EventHandlerPlugin
 ):
 
     ##~~ SettingsPlugin mixin
 
     def get_settings_defaults(self):
         return {
-            # put your plugin's default settings here
+            "Serial port" : "/dev/ttyAMA0"
         }
 
-    ##~~ AssetPlugin mixin
 
-    def get_assets(self):
-        # Define your plugin's asset files to automatically include in the
-        # core UI here.
-        return {
-            "js": ["js/alveocontrol.js"],
-            "css": ["css/alveocontrol.css"],
-            "less": ["less/alveocontrol.less"]
-        }
+    def on_event(self, event, payload):
+        if event == "PrintStarted":
+            alveo = serial.Serial(elf._settings.get(["Serial port"]), 9600)
+            ser.write("start;")
+            print("hello")
 
     ##~~ Softwareupdate hook
 
