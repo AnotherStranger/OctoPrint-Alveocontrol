@@ -28,6 +28,9 @@ class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
         if event == "PrintStarted":
             alveo = serial.Serial(self._settings.get(["Serial port"]), 9600)
             alveo.write(bytes(b"start;"))
+        elif event in["PrintDone", "PrintFailed", "PrintCancelled"]:
+            alveo.write(bytes(b"stop;"))
+            alveo.write(bytes(b"fast;"))
 
 
     ##~~ Softwareupdate hook
