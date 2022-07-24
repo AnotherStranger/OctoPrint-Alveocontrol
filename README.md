@@ -1,6 +1,8 @@
 # OctoPrint-Alveocontrol
 
-**TODO:** Describe what your plugin does.
+This plugin allows you to control your Alveo3D air filtration system using the
+RS232 interface. It automatically starts and stops air filtration when a print
+starts and stops.
 
 ## Setup
 
@@ -9,9 +11,7 @@ or manually using this URL:
 
     https://github.com/AnotherStranger/OctoPrint-Alveocontrol/archive/main.zip
 
-**TODO:** Describe how to install your plugin, if more needs to be done than just installing it via pip or through
-the plugin manager.
-
 ## Configuration
 
-**TODO:** Describe your plugin's configuration options (if any).
+You only have to connect your AlveoOne or AlveoR to your Raspberry and configure
+the serial port in the settings.
