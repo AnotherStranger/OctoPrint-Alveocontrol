@@ -18,3 +18,9 @@ class AlveoController:
 
     def fast(self):
         self._send_command("fast;")
+
+    def speed(self, speed: int):
+        if speed > 100 or speed < 0:
+            raise ValueError("Fan speed has to be between 0 and 100%.")
+
+        self._send_command(f"pwm:{speed}%;")

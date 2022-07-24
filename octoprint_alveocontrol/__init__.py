@@ -13,16 +13,16 @@ class AlveocontrolPlugin(
     octoprint.plugin.EventHandlerPlugin,
 ):
     def on_after_startup(self):
-        self.alveo = AlveoController(self._settings.get(["Serial port"]))
+        self.alveo = AlveoController(self._settings.get(["serial_port"]))
 
     # ~~ SettingsPlugin mixin
 
     def get_settings_defaults(self):
-        return {"Serial port": "/dev/ttyAMA0"}
+        return {"serial_port": "/dev/ttyAMA0"}
 
     def on_settings_save(self, data):
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
-        self.alveo = AlveoController(self._settings.get(["Serial port"]))
+        self.alveo = AlveoController(self._settings.get(["serial_port"]))
 
     def get_template_configs(self):
         return [dict(type="settings", custom_bindings=False)]
