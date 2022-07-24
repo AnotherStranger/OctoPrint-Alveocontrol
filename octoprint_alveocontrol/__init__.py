@@ -1,49 +1,38 @@
 # coding=utf-8
 from __future__ import absolute_import
-import serial
-
-# (Don't forget to remove me)
-# This is a basic skeleton for your plugin's __init__.py. You probably want to adjust the class name of your plugin
-# as well as the plugin mixins it's subclassing from. This is really just a basic skeleton to get you started,
-# defining your plugin as a template plugin, settings and asset plugin. Feel free to add or remove mixins
-# as necessary.
-#
-# Take a look at the documentation on what other plugin mixins are available.
 
 import octoprint.plugin
 
+from octoprint_alveocontrol.alveo import AlveoController
 
-class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
-                         octoprint.plugin.StartupPlugin,
-                         octoprint.plugin.TemplatePlugin,
-                         octoprint.plugin.EventHandlerPlugin
-                         ):
 
-    def __init__(self):
-        self.alveo = serial.Serial(self._settings.get(["Serial port"]), 9600)
+class AlveocontrolPlugin(
+    octoprint.plugin.SettingsPlugin,
+    octoprint.plugin.StartupPlugin,
+    octoprint.plugin.TemplatePlugin,
+    octoprint.plugin.EventHandlerPlugin,
+):
+    def on_after_startup(self):
+        self.alveo = AlveoController(self._settings.get(["Serial port"]))
 
     # ~~ SettingsPlugin mixin
 
     def get_settings_defaults(self):
-        return {
-            "Serial port": "/dev/ttyAMA0"
-        }
+        return {"Serial port": "/dev/ttyAMA0"}
 
     def on_settings_save(self, data):
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
-        self.alveo = serial.Serial(self._settings.get(["Serial port"]), 9600)
+        self.alveo = AlveoController(self._settings.get(["Serial port"]))
 
     def get_template_configs(self):
-        return [
-            dict(type="settings", custom_bindings=False)
-        ]
+        return [dict(type="settings", custom_bindings=False)]
 
     def on_event(self, event, payload):
         if event == "PrintStarted":
-            self.alveo.write(bytes(b"start;"))
+            self.alveo.start()
         elif event in ["PrintDone", "PrintFailed", "PrintCancelled"]:
-            self.alveo.write(bytes(b"stop;"))
-            self.alveo.write(bytes(b"fast;"))
+            self.alveo.stop()
+            self.alveo.fast()
 
     # ~~ Softwareupdate hook
 
@@ -55,13 +44,11 @@ class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
             "alveocontrol": {
                 "displayName": "Alveocontrol Plugin",
                 "displayVersion": self._plugin_version,
-
                 # version check: github repository
                 "type": "github_release",
                 "user": "AnotherStranger",
                 "repo": "OctoPrint-Alveocontrol",
                 "current": self._plugin_version,
-
                 # update method: pip
                 "pip": "https://github.com/AnotherStranger/OctoPrint-Alveocontrol/archive/{target_version}.zip",
             }
