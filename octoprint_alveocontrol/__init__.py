@@ -1,40 +1,40 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-### (Don't forget to remove me)
-# This is a basic skeleton for your plugin's __init__.py. You probably want to adjust the class name of your plugin
-# as well as the plugin mixins it's subclassing from. This is really just a basic skeleton to get you started,
-# defining your plugin as a template plugin, settings and asset plugin. Feel free to add or remove mixins
-# as necessary.
-#
-# Take a look at the documentation on what other plugin mixins are available.
-
 import octoprint.plugin
 
-class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
-    octoprint.plugin.AssetPlugin,
-    octoprint.plugin.TemplatePlugin
-):
+from octoprint_alveocontrol.alveo import AlveoController
 
-    ##~~ SettingsPlugin mixin
+
+class AlveocontrolPlugin(
+    octoprint.plugin.SettingsPlugin,
+    octoprint.plugin.StartupPlugin,
+    octoprint.plugin.TemplatePlugin,
+    octoprint.plugin.EventHandlerPlugin,
+):
+    def on_after_startup(self):
+        self.alveo = AlveoController(self._settings.get(["serial_port"]))
+
+    # ~~ SettingsPlugin mixin
 
     def get_settings_defaults(self):
-        return {
-            # put your plugin's default settings here
-        }
+        return {"serial_port": "/dev/ttyAMA0"}
 
-    ##~~ AssetPlugin mixin
+    def on_settings_save(self, data):
+        octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
+        self.alveo = AlveoController(self._settings.get(["serial_port"]))
 
-    def get_assets(self):
-        # Define your plugin's asset files to automatically include in the
-        # core UI here.
-        return {
-            "js": ["js/alveocontrol.js"],
-            "css": ["css/alveocontrol.css"],
-            "less": ["less/alveocontrol.less"]
-        }
+    def get_template_configs(self):
+        return [dict(type="settings", custom_bindings=False)]
 
-    ##~~ Softwareupdate hook
+    def on_event(self, event, payload):
+        if event == "PrintStarted":
+            self.alveo.start()
+        elif event in ["PrintDone", "PrintFailed", "PrintCancelled"]:
+            self.alveo.stop()
+            self.alveo.fast()
+
+    # ~~ Softwareupdate hook
 
     def get_update_information(self):
         # Define the configuration for your plugin to use with the Software Update
@@ -44,13 +44,11 @@ class AlveocontrolPlugin(octoprint.plugin.SettingsPlugin,
             "alveocontrol": {
                 "displayName": "Alveocontrol Plugin",
                 "displayVersion": self._plugin_version,
-
                 # version check: github repository
                 "type": "github_release",
                 "user": "AnotherStranger",
                 "repo": "OctoPrint-Alveocontrol",
                 "current": self._plugin_version,
-
                 # update method: pip
                 "pip": "https://github.com/AnotherStranger/OctoPrint-Alveocontrol/archive/{target_version}.zip",
             }
@@ -67,6 +65,7 @@ __plugin_name__ = "Alveocontrol Plugin"
 # OctoPrint 1.4.0 - 1.7.x run under both Python 3 and the end-of-life Python 2.
 # OctoPrint 1.8.0 onwards only supports Python 3.
 __plugin_pythoncompat__ = ">=3,<4"  # Only Python 3
+
 
 def __plugin_load__():
     global __plugin_implementation__
