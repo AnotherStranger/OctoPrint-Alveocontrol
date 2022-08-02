@@ -23,7 +23,7 @@ class AlveoController:
     def status(self):
         with serial.Serial(self.port, self.baudrate) as ser:
             line = ser.readline()
-        matches = re.search(status_regex, line)
+        matches = re.search(self.status_regex, line)
         return matches.group(1)
 
     def start(self):
