@@ -23,7 +23,7 @@ class AlveocontrolPlugin(
     def on_settings_save(self, data):
         octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
         self.alveo = AlveoController(self._settings.get(["serial_port"]))
-        self.alveo.speed(self._settings.get(["speed"]))
+        self.alveo.speed(int(self._settings.get(["speed"])))
 
     def get_template_configs(self):
         return [dict(type="settings", custom_bindings=False)]
