@@ -2,7 +2,8 @@ name: Release
 on:
   push:
     branches:
-    - master
+    - main
+    - dev
 jobs:
   release:
     name: Release
@@ -20,3 +21,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npx -y --package=@google/semantic-release-replace-plugin --package=semantic-release semantic-release
+    - uses: EndBug/add-and-commit@v9
+      with:
+        default_author: github_actions
