@@ -1,14 +1,30 @@
+import re
+
 import serial
 
 
 class AlveoController:
+    status_regex = r"\#([a-z0-9A-Z]+:?[0-9]*%?)\#"
+
     def __init__(self, port: str = "/dev/AMA0"):
         self.baudrate = 9600
         self.port = port
 
     def _send_command(self, command: str):
+        retries = 0
+        while self.status != command:
+            with serial.Serial(self.port, self.baudrate) as ser:
+                ser.write(bytes(command, "ascii"))
+            retries += 1
+            if retries > 3:
+                return
+
+    @property
+    def status(self):
         with serial.Serial(self.port, self.baudrate) as ser:
-            ser.write(bytes(command, "ascii"))
+            line = ser.readline()
+        matches = re.search(status_regex, line)
+        return matches.group(1)
 
     def start(self):
         self._send_command("start;")
