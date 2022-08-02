@@ -1,32 +1,23 @@
-import re
-
 import serial
 
 
 class AlveoController:
-    def __init__(self, port: str = "/dev/AMA0"):
+    def __init__(self, port: str = "/dev/ttyAMA0"):
         self.baudrate = 9600
         self.port = port
-        self.status_regex = r"\#([a-z0-9A-Z]+:?[0-9]*%?)\#"
+        self.status_regex = r"\#(.*)\#"
 
     def _send_command(self, command: str):
-        retries = 0
-        while self.status != command:
-            with serial.Serial(self.port, self.baudrate) as ser:
-                ser.write(bytes(f"{command};", "ascii"))
-            retries += 1
-            if retries > 3:
-                return
+        with serial.Serial(self.port, self.baudrate, timeout=1) as ser:
+            ser.write(bytes(f"{command};", "ascii"))
+            try:
+                status = ser.read_until(expected=b"#{command}#")
+            except serial.SerialTimeoutException:
+                raise ValueError("Command not acked: {status}")
 
-    @property
-    def status(self):
-        with serial.Serial(self.port, self.baudrate) as ser:
-            line = str(ser.readline())
-        matches = re.search(self.status_regex, line)
-        return matches.group(1)
-
-    def start(self):
+    def start(self, speed=100):
         self._send_command("start")
+        self.speed(speed)
 
     def stop(self):
         self._send_command("stop")
