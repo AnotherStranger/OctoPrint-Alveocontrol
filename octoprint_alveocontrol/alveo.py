@@ -21,7 +21,7 @@ class AlveoController:
     @property
     def status(self):
         with serial.Serial(self.port, self.baudrate) as ser:
-            line = ser.readline()
+            line = str(ser.readline())
         matches = re.search(self.status_regex, line)
         return matches.group(1)
 
