@@ -113,7 +113,12 @@
         ]
       }
     ],
-
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["setup.py"]
+      }
+    ],
     ["@semantic-release/github"]
   ]
 }
