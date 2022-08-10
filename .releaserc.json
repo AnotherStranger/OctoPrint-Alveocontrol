@@ -116,15 +116,6 @@
 
     [
       "@semantic-release/github",
-      {
-        "gitlabUrl": "https://git.fh-aachen.de",
-        "assets": [
-          {
-            "path": "./",
-            "label": "Source distribution"
-          }
-        ]
-      }
     ]
   ]
 }
