@@ -30,7 +30,7 @@ class AlveocontrolPlugin(
 
     def on_event(self, event, payload):
         if event == "PrintStarted":
-            self.alveo.start()
+            self.alveo.start(int(self._settings.get(["speed"])))
         elif event in ["PrintDone", "PrintFailed", "PrintCancelled"]:
             self.alveo.stop()
             self.alveo.fast()
