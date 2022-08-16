@@ -88,7 +88,7 @@ compatibility:
   # Compatible Python version
   #
   # It is recommended to only support Python 3 for new plugins, in which case this should be ">=3,<4"
-  # 
+  #
   # Plugins that wish to support both Python 2 and 3 should set it to ">=2.7,<4".
   #
   # Plugins that only support Python 2 will not be accepted into the plugin repository.
@@ -97,5 +97,6 @@ compatibility:
 
 ---
 
-**TODO**: Longer description of your plugin, configuration examples etc. This part will be visible on the page at
-http://plugins.octoprint.org/plugin/alveocontrol/
+**TODO**: Longer description of your plugin, configuration examples etc.
+This part will be visible on the page at
+<http://plugins.octoprint.org/plugin/alveocontrol/>

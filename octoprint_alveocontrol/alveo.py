@@ -28,7 +28,7 @@ class AlveoController:
         self._send_command("fast")
 
     def speed(self, speed: Union[str, int]):
-        if not isinstance(speed, int):
+        if isinstance(speed, str):
             speed = int(speed)
 
         if speed > 100 or speed < 0:
