@@ -1,3 +1,5 @@
+from typing import Union
+
 import serial
 
 
@@ -25,7 +27,10 @@ class AlveoController:
     def fast(self):
         self._send_command("fast")
 
-    def speed(self, speed: int):
+    def speed(self, speed: Union[str, int]):
+        if isinstance(speed, str):
+            speed = int(speed)
+
         if speed > 100 or speed < 0:
             raise ValueError("Fan speed has to be between 0 and 100%.")
 
